@@ -1,0 +1,17 @@
+{
+	"manifest_version": 2,
+	"name": "Chromagochi",
+	"description": "A little critter for you to take care of",
+	"version": "1.0",
+	"browser_action": {
+		"default_icon": "assets/img/icon.png"
+	},
+	"background": {
+		"scripts": ["assets/js/background.js"],
+		"persistent": false
+	},
+	"permissions": [
+		"alarms",		
+		"storage"
+	]
+}
