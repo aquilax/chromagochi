@@ -87,6 +87,10 @@
       });
     }
 
+    Pet.prototype.isDead = function() {
+      return this.status.happiness > 0;
+    };
+
     Pet.prototype.feed = function() {
       this.status.happiness = this["default"].happiness;
       this.save();
@@ -104,7 +108,7 @@
       chrome.browserAction.setBadgeText({
         text: this.status.happiness + ''
       });
-      c = hsl2rgb(0, 1, this.status.happiness / 100);
+      c = hsl2rgb(0, 1, this.status.happiness / 110);
       return chrome.browserAction.setBadgeBackgroundColor({
         color: [c.R, c.G, c.B, 255]
       });
@@ -174,7 +178,9 @@
 
     Chromagochi.prototype.processAlarm = function(alarm) {
       if (alarm.name === ALARM_NAME) {
-        return this.pet.age(alarm.periodInMinutes);
+        if (!this.pet.isDead()) {
+          return this.pet.age(alarm.periodInMinutes);
+        }
       }
     };
 

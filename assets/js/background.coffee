@@ -71,6 +71,9 @@ class Pet
 			callback
 			self.update()
 
+	isDead: ->
+		@status.happiness > 0
+
 	feed: =>
 		@status.happiness = @default.happiness
 		@save()
@@ -84,7 +87,7 @@ class Pet
 	update: =>
 		chrome.browserAction.setBadgeText
 			text: @status.happiness + ''
-		c = hsl2rgb 0, 1, @status.happiness / 100
+		c = hsl2rgb 0, 1, @status.happiness / 110
 		chrome.browserAction.setBadgeBackgroundColor
 			 color: [c.R, c.G, c.B, 255]
 
@@ -127,7 +130,7 @@ class Chromagochi
 
 	processAlarm: (alarm) =>
 		if alarm.name == ALARM_NAME
-			@pet.age alarm.periodInMinutes
+			@pet.age alarm.periodInMinutes if !@pet.isDead()
 
 cg = new Chromagochi
 cg.start()
