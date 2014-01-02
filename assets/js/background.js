@@ -113,7 +113,7 @@
       chrome.browserAction.setBadgeText({
         text: this.status.happiness + ''
       });
-      l = Math.log(this.status.happiness) / 5;
+      l = Math.log(this.status.happiness) / 3;
       c = hsl2rgb(0, 1, l);
       chrome.browserAction.setBadgeBackgroundColor({
         color: [c.R, c.G, c.B, 255]
