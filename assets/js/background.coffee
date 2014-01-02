@@ -69,7 +69,7 @@ class Pet
 	constructor: (callback) ->
 		self = @
 		@load ->
-			callback
+			callback() if callback?
 			self.update()
 
 	isAlive: ->
@@ -90,7 +90,6 @@ class Pet
 			text: @status.happiness + ''
 		l = Math.log(@status.happiness) / 5
 		c = hsl2rgb 0, 1, l
-		console.log c
 		chrome.browserAction.setBadgeBackgroundColor
 			 color: [c.R, c.G, c.B, 255]
 		true
@@ -117,7 +116,7 @@ class Chromagochi
 
 	constructor: ->
 		self = @
-		@pet = new Pet
+		@pet = new Pet null
 		chrome.browserAction.onClicked.addListener (tab) ->
 			self.pet.feed()
 		chrome.alarms.onAlarm.addListener @processAlarm

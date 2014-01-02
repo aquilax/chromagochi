@@ -85,7 +85,10 @@
       };
       self = this;
       this.load(function() {
-        callback;        return self.update();
+        if (callback != null) {
+          callback();
+        }
+        return self.update();
       });
     }
 
@@ -112,7 +115,6 @@
       });
       l = Math.log(this.status.happiness) / 5;
       c = hsl2rgb(0, 1, l);
-      console.log(c);
       chrome.browserAction.setBadgeBackgroundColor({
         color: [c.R, c.G, c.B, 255]
       });
@@ -161,7 +163,7 @@
         return Chromagochi.prototype.processAlarm.apply(_this, arguments);
       };
       self = this;
-      this.pet = new Pet;
+      this.pet = new Pet(null);
       chrome.browserAction.onClicked.addListener(function(tab) {
         return self.pet.feed();
       });
