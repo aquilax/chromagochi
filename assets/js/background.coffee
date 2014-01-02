@@ -87,9 +87,12 @@ class Pet
 	update: =>
 		chrome.browserAction.setBadgeText
 			text: @status.happiness + ''
-		c = hsl2rgb 0, 1, @status.happiness / 110
+		l = Math.log(@status.happiness) / 5
+		c = hsl2rgb 0, 1, l
+		console.log c
 		chrome.browserAction.setBadgeBackgroundColor
 			 color: [c.R, c.G, c.B, 255]
+		true
 
 	clone: (object) ->
 		JSON.parse(JSON.stringify(object))

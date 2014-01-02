@@ -104,14 +104,17 @@
     };
 
     Pet.prototype.update = function() {
-      var c;
+      var c, l;
       chrome.browserAction.setBadgeText({
         text: this.status.happiness + ''
       });
-      c = hsl2rgb(0, 1, this.status.happiness / 110);
-      return chrome.browserAction.setBadgeBackgroundColor({
+      l = Math.log(this.status.happiness) / 5;
+      c = hsl2rgb(0, 1, l);
+      console.log(c);
+      chrome.browserAction.setBadgeBackgroundColor({
         color: [c.R, c.G, c.B, 255]
       });
+      return true;
     };
 
     Pet.prototype.clone = function(object) {
