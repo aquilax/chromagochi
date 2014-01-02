@@ -87,7 +87,7 @@
       });
     }
 
-    Pet.prototype.isDead = function() {
+    Pet.prototype.isAlive = function() {
       return this.status.happiness > 0;
     };
 
@@ -178,7 +178,7 @@
 
     Chromagochi.prototype.processAlarm = function(alarm) {
       if (alarm.name === ALARM_NAME) {
-        if (!this.pet.isDead()) {
+        if (this.pet.isAlive()) {
           return this.pet.age(alarm.periodInMinutes);
         }
       }

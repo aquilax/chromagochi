@@ -71,7 +71,7 @@ class Pet
 			callback
 			self.update()
 
-	isDead: ->
+	isAlive: ->
 		@status.happiness > 0
 
 	feed: =>
@@ -130,7 +130,7 @@ class Chromagochi
 
 	processAlarm: (alarm) =>
 		if alarm.name == ALARM_NAME
-			@pet.age alarm.periodInMinutes if !@pet.isDead()
+			@pet.age alarm.periodInMinutes if @pet.isAlive()
 
 cg = new Chromagochi
 cg.start()
