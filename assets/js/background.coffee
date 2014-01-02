@@ -1,6 +1,7 @@
 TICK_MINUTES = 1
 ALARM_NAME = 'tick'
 STORAGE_KEY = 'chromagochi'
+LIFE_MINUTES = 120
 
 # http://jsfiddle.net/EPWF6/9/
 hsl2rgb = (H, S, L) ->
@@ -61,7 +62,7 @@ class Pet
 
 	default:
 		name: 'Chromagochi'
-		happiness: 100
+		happiness: LIFE_MINUTES
 	
 	status: {}
 
