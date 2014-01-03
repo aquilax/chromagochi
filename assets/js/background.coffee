@@ -4,6 +4,7 @@ STORAGE_KEY = 'chromagochi'
 LIFE_MINUTES = 120
 BLINK_INTERVAL = 300
 BLINK_LIMIT = 30
+MAX_HUE = 359
 
 # http://jsfiddle.net/EPWF6/9/
 hsl2rgb = (H, S, L) ->
@@ -94,9 +95,12 @@ class Pet
 	update: =>
 		chrome.browserAction.setBadgeText
 			text: @status.happiness + ''
-		if !@blinker
-			l = 1-1/(1.3+@status.happiness/5)
-			c = hsl2rgb 0, 1, l
+		if !@blinker?
+			#l = 1-1/(1.3+@status.happiness/5)
+			#c = hsl2rgb 0, 1, l
+			h = Math.round ((@status.happiness - BLINK_LIMIT)/(LIFE_MINUTES-BLINK_LIMIT)) * MAX_HUE
+			h = (30 + h) % MAX_HUE
+			c = hsl2rgb h, 1, 0.8
 			@_setColor [c.R, c.G, c.B, 255]
 
 	clone: (object) ->
