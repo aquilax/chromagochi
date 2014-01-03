@@ -81,8 +81,8 @@ class Pet
 	feed: =>
 		@status.happiness = @default.happiness
 		@save()
-		@update()
 		@stopBlinking()
+		@update()
 	
 	age: (minutes) =>
 		@status.happiness--

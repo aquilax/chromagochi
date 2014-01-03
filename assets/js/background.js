@@ -111,8 +111,8 @@
     Pet.prototype.feed = function() {
       this.status.happiness = this["default"].happiness;
       this.save();
-      this.update();
-      return this.stopBlinking();
+      this.stopBlinking();
+      return this.update();
     };
 
     Pet.prototype.age = function(minutes) {
