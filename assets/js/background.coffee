@@ -94,9 +94,10 @@ class Pet
 	update: =>
 		chrome.browserAction.setBadgeText
 			text: @status.happiness + ''
-		l = 1-1/(1.3+@status.happiness/5)
-		c = hsl2rgb 0, 1, l
-		@_setColor [c.R, c.G, c.B, 255]
+		if !@blinker
+			l = 1-1/(1.3+@status.happiness/5)
+			c = hsl2rgb 0, 1, l
+			@_setColor [c.R, c.G, c.B, 255]
 
 	clone: (object) ->
 		JSON.parse(JSON.stringify(object))
@@ -128,6 +129,7 @@ class Pet
 				color = [255, 0, 0, 255]
 			self._setColor color
 			toggle = !toggle
+		, BLINK_INTERVAL
 
 	stopBlinking: =>
 		clearInterval(@blinker) if @blinker?

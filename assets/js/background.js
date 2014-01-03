@@ -129,9 +129,11 @@
       chrome.browserAction.setBadgeText({
         text: this.status.happiness + ''
       });
-      l = 1 - 1 / (1.3 + this.status.happiness / 5);
-      c = hsl2rgb(0, 1, l);
-      return this._setColor([c.R, c.G, c.B, 255]);
+      if (!this.blinker) {
+        l = 1 - 1 / (1.3 + this.status.happiness / 5);
+        c = hsl2rgb(0, 1, l);
+        return this._setColor([c.R, c.G, c.B, 255]);
+      }
     };
 
     Pet.prototype.clone = function(object) {
@@ -180,7 +182,7 @@
         }
         self._setColor(color);
         return toggle = !toggle;
-      });
+      }, BLINK_INTERVAL);
     };
 
     Pet.prototype.stopBlinking = function() {
