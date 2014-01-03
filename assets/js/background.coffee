@@ -88,7 +88,7 @@ class Pet
 	update: =>
 		chrome.browserAction.setBadgeText
 			text: @status.happiness + ''
-		l = Math.log(@status.happiness) / 3
+		l = 1-1/(1.3+@status.happiness/5)
 		c = hsl2rgb 0, 1, l
 		chrome.browserAction.setBadgeBackgroundColor
 			 color: [c.R, c.G, c.B, 255]
