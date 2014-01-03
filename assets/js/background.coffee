@@ -2,6 +2,8 @@ TICK_MINUTES = 1
 ALARM_NAME = 'tick'
 STORAGE_KEY = 'chromagochi'
 LIFE_MINUTES = 120
+BLINK_INTERVAL = 300
+BLINK_LIMIT = 30
 
 # http://jsfiddle.net/EPWF6/9/
 hsl2rgb = (H, S, L) ->
@@ -63,8 +65,9 @@ class Pet
 	default:
 		name: 'Chromagochi'
 		happiness: LIFE_MINUTES
+	blinker: null
 	
-	status: {}
+	status: null
 
 	constructor: (callback) ->
 		self = @
@@ -79,20 +82,21 @@ class Pet
 		@status.happiness = @default.happiness
 		@save()
 		@update()
+		@stopBlinking()
 	
 	age: (minutes) =>
 		@status.happiness--
 		@save()
 		@update()
+		if @status.happiness == BLINK_LIMIT
+			@startBlinking()
 
 	update: =>
 		chrome.browserAction.setBadgeText
 			text: @status.happiness + ''
 		l = 1-1/(1.3+@status.happiness/5)
 		c = hsl2rgb 0, 1, l
-		chrome.browserAction.setBadgeBackgroundColor
-			 color: [c.R, c.G, c.B, 255]
-		true
+		@_setColor [c.R, c.G, c.B, 255]
 
 	clone: (object) ->
 		JSON.parse(JSON.stringify(object))
@@ -110,6 +114,26 @@ class Pet
 		chrome.storage.local.set data, ->
 			callback() if callback?
 		
+	_setColor: (color) ->
+		chrome.browserAction.setBadgeBackgroundColor
+			color: color
+		true
+
+	startBlinking: =>
+		self = @
+		toggle = false
+		@blinker = setInterval () ->
+			color = [0, 0, 0, 255]
+			if toggle
+				color = [255, 0, 0, 255]
+			self._setColor color
+			toggle = !toggle
+
+	stopBlinking: =>
+		clearInterval(@blinker) if @blinker?
+		@blinker = null
+		true
+
 class Chromagochi
 
 	pet: null
