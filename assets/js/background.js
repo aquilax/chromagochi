@@ -111,6 +111,7 @@
     };
 
     Pet.prototype.feed = function() {
+      window._gaq.push(['_trackEvent', this.status.happiness, 'feed']);
       this.status.happiness = this["default"].happiness;
       this.save();
       this.stopBlinking();
@@ -242,6 +243,21 @@
     return Chromagochi;
 
   })();
+
+  (function(global) {
+    global._gaq = global._gaq || [];
+    global._gaq.push(['_setAccount', 'UA-115818-75']);
+    global._gaq.push(['_trackPageview']);
+    return (function() {
+      var ga, s;
+      ga = document.createElement("script");
+      ga.type = "text/javascript";
+      ga.async = true;
+      ga.src = "https://ssl.google-analytics.com/ga.js";
+      s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(ga, s);
+    })();
+  })(window);
 
   cg = new Chromagochi;
 

@@ -3,7 +3,7 @@
 	"name": "Chromagochi",
 	"short_name": "Chromagochi",
 	"description": "A little critter for you to take care of",
-	"version": "1.2",
+	"version": "1.3",
 	"browser_action": {
 		"default_icon": "assets/img/icon19.png"
 	},
@@ -11,6 +11,7 @@
 		"scripts": ["assets/js/background.js"],
 		"persistent": false
 	},
+	"content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
 	"permissions": [
 		"alarms",		
 		"storage"
