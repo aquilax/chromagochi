@@ -5,6 +5,7 @@ LIFE_MINUTES = 120
 BLINK_INTERVAL = 300
 BLINK_LIMIT = 30
 MAX_HUE = 359
+NAME = 'Chromagochi'
 
 # http://jsfiddle.net/EPWF6/9/
 hsl2rgb = (H, S, L) ->
@@ -56,18 +57,59 @@ hsl2rgb = (H, S, L) ->
 	R = Math.round(R)
 	G = Math.round(G)
 	B = Math.round(B)
-	
+
 	R: R
 	G: G
 	B: B
+
+intervals = [
+  {
+    label: 'year'
+    seconds: 31536000
+  }
+  {
+    label: 'month'
+    seconds: 2592000
+  }
+  {
+    label: 'day'
+    seconds: 86400
+  }
+  {
+    label: 'hour'
+    seconds: 3600
+  }
+  {
+    label: 'minute'
+    seconds: 60
+  }
+  {
+    label: 'second'
+    seconds: 0
+  }
+]
+
+timeSince = (date) ->
+	seconds = Math.floor((Date.now() - date.getTime()) / 1000)
+	interval = intervals.find((i) ->
+		i.seconds < seconds
+	)
+	count = Math.floor(seconds / interval.seconds)
+	ending = 's'
+	if count == 1
+		ending = ''
+	count + ' ' + interval.label + ending
 
 class Pet
 
 	default:
 		name: 'Chromagochi'
 		happiness: LIFE_MINUTES
+		dead_times: 0
+		feed_times: 0
+		born: new Date().getTime()
 	blinker: null
-	
+
 	status: null
 
 	constructor: (callback) ->
@@ -81,12 +123,20 @@ class Pet
 
 	feed: =>
 		window._gaq.push(['_trackEvent', @status.happiness, 'feed'])
+		if @status.happiness != @default.happiness
+			@status.feed_times = (@status.feed_times || 0) + 1
+			window._gaq.push(['_trackEvent', @status.feed_times, 'feed'])
+		if !@isAlive?
+			@status.born = new Date().getTime()
 		@status.happiness = @default.happiness
 		@save()
 		@stopBlinking()
 		@update()
-	
+
 	age: (minutes) =>
+		if @status.happiness == 0
+			@status.dead_times = (@status.dead_times || 0) + 1
+			window._gaq.push(['_trackEvent', @status.dead_times, 'dead'])
 		@status.happiness--
 		@save()
 		@update()
@@ -103,6 +153,8 @@ class Pet
 			h = (30 + h) % MAX_HUE
 			c = hsl2rgb h, 1, 0.8
 			@_setColor [c.R, c.G, c.B, 255]
+		chrome.browserAction.setTitle
+			title: NAME + " #" + (@status.dead_times + 1) + "\n" + "Born: " + timeSince(new Date(@status.born)) + " ago"
 
 	clone: (object) ->
 		JSON.parse(JSON.stringify(object))
@@ -116,10 +168,14 @@ class Pet
 
 	save: (callback) ->
 		data = {}
+		if !@status.born
+			@status.born = new Date().getTime()
+		if !@dead_times
+			@dead_times = 0
 		data[STORAGE_KEY] = @status
 		chrome.storage.local.set data, ->
 			callback() if callback?
-		
+
 	_setColor: (color) ->
 		chrome.browserAction.setBadgeBackgroundColor
 			color: color

@@ -11,7 +11,7 @@ copy:
 	cp manifest.json $(TEMPDIR)
 	cp assets/js/*.js $(TEMPDIR)/assets/js
 	cp assets/img/* $(TEMPDIR)/assets/img
-	
+
 clean:
 	rm -rf $(TEMPDIR)/*
 	rm -rf $(BUILDDIR)/*
