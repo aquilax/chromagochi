@@ -85,14 +85,14 @@ intervals = [
   }
   {
     label: 'second'
-    seconds: 0
+    seconds: 1
   }
 ]
 
 timeSince = (date) ->
 	seconds = Math.floor((Date.now() - date.getTime()) / 1000)
 	interval = intervals.find((i) ->
-		i.seconds < seconds
+		i.seconds <= seconds
 	)
 	count = Math.floor(seconds / interval.seconds)
 	ending = 's'
@@ -123,21 +123,21 @@ class Pet
 
 	feed: =>
 		window._gaq.push(['_trackEvent', @status.happiness, 'feed'])
+		if !@isAlive()
+			@status.born = new Date().getTime() - 1000;
 		if @status.happiness != @default.happiness
 			@status.feed_times = (@status.feed_times || 0) + 1
 			window._gaq.push(['_trackEvent', @status.feed_times, 'feed'])
-		if !@isAlive?
-			@status.born = new Date().getTime()
 		@status.happiness = @default.happiness
 		@save()
 		@stopBlinking()
 		@update()
 
 	age: (minutes) =>
+		@status.happiness--
 		if @status.happiness == 0
 			@status.dead_times = (@status.dead_times || 0) + 1
 			window._gaq.push(['_trackEvent', @status.dead_times, 'dead'])
-		@status.happiness--
 		@save()
 		@update()
 		if @status.happiness == BLINK_LIMIT
@@ -163,6 +163,10 @@ class Pet
 		self = @
 		chrome.storage.local.get STORAGE_KEY, (items) ->
 			self.status = items[STORAGE_KEY] || self.clone self.default
+			if !self.status.dead_times
+				self.status.dead_times = 0
+			if !self.status.born
+				self.status.born = new Date().getTime()
 			callback() if callback?
 		true
 

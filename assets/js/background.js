@@ -94,7 +94,7 @@
     },
     {
       label: 'second',
-      seconds: 0
+      seconds: 1
     }
   ];
 
@@ -102,7 +102,7 @@
     var count, ending, interval, seconds;
     seconds = Math.floor((Date.now() - date.getTime()) / 1000);
     interval = intervals.find(function(i) {
-      return i.seconds < seconds;
+      return i.seconds <= seconds;
     });
     count = Math.floor(seconds / interval.seconds);
     ending = 's';
@@ -137,12 +137,12 @@
 
       feed() {
         window._gaq.push(['_trackEvent', this.status.happiness, 'feed']);
+        if (!this.isAlive()) {
+          this.status.born = new Date().getTime() - 1000;
+        }
         if (this.status.happiness !== this.default.happiness) {
           this.status.feed_times = (this.status.feed_times || 0) + 1;
           window._gaq.push(['_trackEvent', this.status.feed_times, 'feed']);
-        }
-        if (this.isAlive == null) {
-          this.status.born = new Date().getTime();
         }
         this.status.happiness = this.default.happiness;
         this.save();
@@ -151,11 +151,11 @@
       }
 
       age(minutes) {
+        this.status.happiness--;
         if (this.status.happiness === 0) {
           this.status.dead_times = (this.status.dead_times || 0) + 1;
           window._gaq.push(['_trackEvent', this.status.dead_times, 'dead']);
         }
-        this.status.happiness--;
         this.save();
         this.update();
         if (this.status.happiness === BLINK_LIMIT) {
@@ -190,6 +190,12 @@
         self = this;
         chrome.storage.local.get(STORAGE_KEY, function(items) {
           self.status = items[STORAGE_KEY] || self.clone(self.default);
+          if (!self.status.dead_times) {
+            self.status.dead_times = 0;
+          }
+          if (!self.status.born) {
+            self.status.born = new Date().getTime();
+          }
           if (callback != null) {
             return callback();
           }
