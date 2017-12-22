@@ -4,7 +4,10 @@ TEMPDIR = ./temp
 all: clean copy
 	cd $(TEMPDIR); zip -r ../$(BUILDDIR)/chromagochi.zip *; cd ..
 
-copy:
+assets/js/background.js: src/background.coffee
+	coffee -o $@ $<
+
+copy: assets/js/background.js
 	mkdir $(TEMPDIR)/assets
 	mkdir $(TEMPDIR)/assets/js
 	mkdir $(TEMPDIR)/assets/img
