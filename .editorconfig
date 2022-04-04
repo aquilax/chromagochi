@@ -16,8 +16,11 @@ indent_style = disabled
 insert_final_newline = disabled
 trim_trailing_whitespace = disabled
 
-[{package.json,.travis.yml}]
+[{package.json}]
 indent_size = 2
 
 [*.coffee]
+indent_style = tab
+
+[Makefile]
 indent_style = tab
