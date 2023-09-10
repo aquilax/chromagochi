@@ -13,7 +13,9 @@ hsl2rgb = (H, S, L) ->
 	# calculate chroma
 	C = (1 - Math.abs((2 * L) - 1)) * S
 
-	# Find a point (R1, G1, B1) along the bottom three faces of the RGB cube, with the same hue and chroma as our color (using the intermediate value X for the second largest component of this color)
+	# Find a point (R1, G1, B1) along the bottom three faces of the RGB cube,
+	# with the same hue and chroma as our color (using the intermediate value
+	# X for the second largest component of this color)
 	H_ = H / 60
 
 	X = C * (1 - Math.abs((H_ % 2) - 1))
@@ -101,7 +103,6 @@ timeSince = (date) ->
 	count + ' ' + interval.label + ending
 
 class Pet
-
 	default:
 		name: 'Chromagochi'
 		happiness: LIFE_MINUTES
@@ -122,12 +123,10 @@ class Pet
 		@status.happiness > 0
 
 	feed: =>
-		window._gaq.push(['_trackEvent', @status.happiness, 'feed'])
 		if !@isAlive()
 			@status.born = new Date().getTime() - 1000;
 		if @status.happiness != @default.happiness
 			@status.feed_times = (@status.feed_times || 0) + 1
-			window._gaq.push(['_trackEvent', @status.feed_times, 'feed'])
 		@status.happiness = @default.happiness
 		@save()
 		@stopBlinking()
@@ -137,7 +136,6 @@ class Pet
 		@status.happiness--
 		if @status.happiness == 0
 			@status.dead_times = (@status.dead_times || 0) + 1
-			window._gaq.push(['_trackEvent', @status.dead_times, 'dead'])
 		@save()
 		@update()
 		if @status.happiness == BLINK_LIMIT
@@ -225,22 +223,6 @@ class Chromagochi
 	processAlarm: (alarm) =>
 		if alarm.name == ALARM_NAME
 			@pet.age alarm.periodInMinutes if @pet.isAlive()
-
-((global) ->
-	global._gaq = global._gaq || []
-	global._gaq.push ['_setAccount', 'UA-115818-75']
-	global._gaq.push ['_trackPageview']
-
-	(->
-		ga = document.createElement("script")
-		ga.type = "text/javascript"
-		ga.async = true
-		ga.src = "https://ssl.google-analytics.com/ga.js"
-		s = document.getElementsByTagName("script")[0]
-		s.parentNode.insertBefore ga, s
-		return
-	)()
-)(window)
 
 cg = new Chromagochi
 cg.start()
